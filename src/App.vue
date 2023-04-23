@@ -10,8 +10,7 @@
   author:""
  })
  onMounted(() =>{
-  console.log('xx');
-  axios.get('/api/article').then(res =>{
+  axios.get('https://api.puxiaoshuai.top/article').then(res =>{
     console.log("请求数据",res);
     const tempBlog = res.data || {}
     blog.author = tempBlog.author
