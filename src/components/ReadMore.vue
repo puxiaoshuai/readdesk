@@ -1,11 +1,15 @@
 <template>
-  <span class="readnext">{{ props.msg || "再读一篇" }} | 感觉不错</span>
+  <span @click="handleClick" class="readnext">{{ props.msg || '再读一篇' }} | 感觉不错</span>
 </template>
 
 <script setup>
 const props = defineProps({
-  msg:String
+  msg: String
 })
+const emit = defineEmits(['click'])
+function handleClick() {
+  emit('click', true)
+}
 </script>
 
 <style  scoped>
@@ -16,4 +20,5 @@ const props = defineProps({
   padding: 4px 14px;
   font-size: 14px;
 }
+
 </style>
