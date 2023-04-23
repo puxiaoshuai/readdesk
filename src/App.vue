@@ -1,6 +1,7 @@
 
 <template>
   <el-skeleton class="skele-wrapper" v-if="blog.title === ''" :rows="5" animated />
+  <el-skeleton class="skele-wrapper" v-if="blog.title === ''" :rows="14" animated />
   <div v-else class="content">
     <header>
       <div class="headerContent">
@@ -22,15 +23,15 @@
     <p class="tip">申明本站只有用作学习使用,如有侵权,联系我进行删除</p>
     <div class="history" @click="openDrawer">历史记录</div>
   </div>
-  <el-drawer v-model="drawer" title="浏览记录" :direction="direction">
-    <el-button class="history-clear-btn">清空历史记录</el-button>
+  <el-drawer class="right-drawer" v-model="drawer" title="浏览记录" :direction="direction">
+    <el-button @click="handleClearHistory" class="history-clear-btn">清空历史记录</el-button>
     <div
       @click="handleHistory(item)"
       v-for="item in historyList"
       :key="item.author"
       class="history-item"
     >
-      {{ item.title }} <span class="history-item-author">{{ item.author }}</span>
+      <span :style="{'font-weight': 'bold'}" >{{ item.title }}</span> <span class="history-item-author">{{ item.author }}</span>
     </div>
   </el-drawer>
 </template>
@@ -38,7 +39,6 @@
 import ReadMore from './components/ReadMore.vue'
 import { onMounted, onBeforeUnmount, reactive, ref } from 'vue'
 import axios from 'axios'
-import { indexedDb } from './utils/utils.js'
 
 const blog = reactive({
   title: '',
@@ -50,8 +50,7 @@ const direction = ref('rtl')
 const drawer = ref(false)
 onMounted(() => {
   loadAticle()
-  const currentList = readLocalStoreage()
-  historyList.value = currentList
+  
 })
 //每次退出的时候，保存当前页面的数据
 
@@ -67,6 +66,8 @@ function readLocalStoreage() {
 }
 function openDrawer() {
   drawer.value = true
+  const currentList = readLocalStoreage()
+  historyList.value = currentList
 }
 function handleHistory(tempBlog) {
   blog.author = tempBlog.author
@@ -88,8 +89,13 @@ function loadAticle() {
     saveLocalStoreage()
   })
 }
-function onChildChange(v) {
+function onChildChange() {
+  blog.title = ''
   loadAticle()
+}
+function handleClearHistory(){
+  historyList.value = []
+  localStorage.removeItem('article')
 }
 </script>
 
@@ -167,6 +173,9 @@ function onChildChange(v) {
 .history-item {
   padding: 0px 10px 10px 10px;
 }
+.history-item:hover{
+  color: #4c9878;
+}
 .history-item:hover {
   cursor: pointer;
 }
@@ -178,4 +187,8 @@ function onChildChange(v) {
   margin-left: 100px;
   margin-bottom: 10px;
 }
+:deep(.right-drawer .el-drawer__header){
+  margin-bottom: 0px;
+}
+
 </style>
